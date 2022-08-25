@@ -21,12 +21,9 @@ const Sidebar = ({priceFilter, setPriceFilter, setBedroomsFilter, cities, setCit
   }
 
   const resetFilters = () => {
-    document.getElementById('city').value = 'Any'
-    document.getElementById('bedrooms').value = document.getElementById('anyBedroom')
-
     setPriceFilter(null)
-    setBedroomsFilter(null)
-    setCityFilter(null)
+    setBedroomsFilter('Any')
+    setCityFilter('Any')
   }
 
   return (
@@ -39,7 +36,7 @@ const Sidebar = ({priceFilter, setPriceFilter, setBedroomsFilter, cities, setCit
           <form className = 'w-3/4 '>
 
             <label for='price'> Price: ${priceFilter}{ priceFilter === 1000000 ? '+' : ''}</label>
-            <input type='range' id='price' min='1' max='1000000' defaultValue='1000000' onChange={(e) => handlePriceChange(e.target.value)}/>
+            <input type='range' id='price' min='1' max='2000000' defaultValue='2000000' onChange={(e) => handlePriceChange(e.target.value)}/>
             
             <label for='bedrooms'>Bedrooms: </label>
             <select id='bedrooms' onChange = {(e) => handleBedroomChange(e.target.value)}>
@@ -48,15 +45,15 @@ const Sidebar = ({priceFilter, setPriceFilter, setBedroomsFilter, cities, setCit
               <option>2</option>
               <option>3</option>
               <option>4</option>
-              <option>5+</option>
+              <option value = '5'>5+</option>
             </select>
 
             <label for='city'>City:</label>
             <select id='city' onChange = {(e) => handleCityChange(e.target.value)}>
-            <option value=''>Any</option>
-            {cities.map((city) => {
+            <option >Any</option>
+            {Object.keys(cities).map((city) => {
               return (
-                <option>{city}</option>
+                <option key = {city}>{city}</option>
               )
             })}
             </select>

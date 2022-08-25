@@ -7,12 +7,14 @@ import Sidebar from './components/sidebar'
 
 function App() {
 
-  const [listings, setListings] = useState([])
+  const [allListings, setAllListings] = useState([])
   const [currentListings, setCurrentListings] = useState([])
+  const [listingCards, setListingCards] = useState([])
   const [priceFilter, setPriceFilter] = useState(null)
-  const [bedroomFilter, setBedroomsFilter] = useState(null)
-  const [cityFilter, setCityFilter] = useState(null)
+  const [bedroomFilter, setBedroomsFilter] = useState('Any')
+  const [cityFilter, setCityFilter] = useState('Any')
   const [cities, setCities] = useState([])
+  const [listingsByBedrooms, setBedroomListings] = useState({})
 
   // Grab data from database and map it to components
   useEffect(() => {
@@ -21,30 +23,100 @@ function App() {
     const getData = () => {
       return data
     }
+
     const fetchedListings = getData()
-    console.log(data)
     const newCities = {}
-    const allListings = fetchedListings.map((listing, key) => {
-        if(!newCities[listing.property.address.city]) newCities[listing.property.address.city] = true
+    const bedCounts = {}
 
-        return (
-          <ListingCard data = {listing} key = {key}/>
-        )
-      })
+    console.log(fetchedListings)
+    
+    const allListings = fetchedListings.map((listingData, key) => {
 
+      const component = <ListingCard data = {listingData} key = {key}/>
 
-   
-    setCities(Object.keys(newCities))
-    setListings(allListings)
-    setCurrentListings(allListings)
+        // create object of city : [listings]
+        const listingCity = listingData.property.address.city
+        if(!newCities[listingCity]) newCities[listingCity] = [component]
+        else newCities[listingCity].push(component)
+
+        // create object of # bedrooms : [listings]
+        const listingBedrooms = listingData.property.numberBedrooms
+        if(listingBedrooms >= 5){
+          if(!bedCounts[5]) bedCounts[5] = [component]
+          else bedCounts[5].push(component)
+        }
+        else {
+          if(!bedCounts[listingBedrooms]) bedCounts[listingBedrooms] = [component]
+          else bedCounts[listingBedrooms].push(component)
+        }
+        
+
+        return ({
+          component,
+          listingData,
+        })
+    })
+
+    const allComponents = []
+    for(const listing of allListings){
+      allComponents.push(listing.component)
+    }
+
+    setBedroomListings(bedCounts)
+    setCities(newCities)
+    setAllListings(allListings)
+    setCurrentListings(allComponents)
+    setListingCards(allComponents)
   },[])
+
 
   // update current listings when filters are applied
   useEffect(() => {
     console.log('Filters:' , priceFilter, bedroomFilter, cityFilter)
+    
+    if(!listingCards.length) return
+    if(!priceFilter && !bedroomFilter && !cityFilter) setCurrentListings(listingCards)
+
+    let filteredListings = listingCards
+
+
+    if(cityFilter !== 'Any') filteredListings = cities[cityFilter]
+  
+
+    if(bedroomFilter !== 'Any') filteredListings = compare(filteredListings, listingsByBedrooms[bedroomFilter])
+    
+
+    if(priceFilter !== null){
+
+      if(priceFilter !== 2000000){
+
+        filteredListings = filteredListings.map((listing) => {
+
+        const price = listing.props.data.price
+
+        if(price < priceFilter) return listing
+        
+    
+        })
+      }
+    }
+
+    setCurrentListings(filteredListings)
+
   }, [priceFilter, bedroomFilter, cityFilter])
 
-  
+  const compare = (arr1, arr2 = null) => {
+
+    if(!arr2) return []
+
+    const result = [] 
+
+    for(const listing of arr1){
+      if(arr2.includes(listing)) result.push(listing)
+    }
+
+    return result
+  }
   // Filtering
     // keep a current list as we pass it through each filter and return the las t
     // city
