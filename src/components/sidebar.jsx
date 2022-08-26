@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
+import { AiOutlineHome } from 'react-icons/ai'
 
 const Sidebar = ({priceFilter, setPriceFilter, setBedroomsFilter, cities, setCityFilter}) => {
 
@@ -27,18 +28,18 @@ const Sidebar = ({priceFilter, setPriceFilter, setBedroomsFilter, cities, setCit
   }
 
   return (
-    <div className = 'flex flex-col justify-start items-center gap-20 left-0 w-1/6 h-screen bg-stone-300 py-10 border-solid border-r-2 border-zinc-300 shadow-2xl'>
-    <div>Logo</div>
+    <div className = 'flex flex-col justify-start items-center gap-20 left-0 w-1/6 h-screen bg-stone-300 py-10 border-solid border-zinc-300 shadow-2xl'>
+    <AiOutlineHome size ={60}/>
     <div className = 'w-full flex-col flex items-center'>
-        <button className = 'w-full h-12 hover:bg-stone-400'>Listings</button>
-        <button className = 'w-full h-12 hover:bg-stone-400' onClick={() => setShowFilters(!showFilters)}>Filter</button>
+        <button className = 'w-full h-12 border-y-2 border-stone-500 bg-stone-400 hover:bg-stone-500 font-semibold'>Listings</button>
+        <button className = 'w-full h-12 border-b-2 border-stone-500 bg-stone-400 hover:bg-stone-500 font-semibold' onClick={() => setShowFilters(!showFilters)}>Filter</button>
         { showFilters ? (
-          <form className = 'w-3/4 '>
+          <form className = 'w-full bg-stone-400 flex flex-col p-4 gap-2 border-b-2 border-stone-500'>
 
-            <label for='price'> Price: ${priceFilter}{ priceFilter === 1000000 ? '+' : ''}</label>
-            <input type='range' id='price' min='1' max='2000000' defaultValue='2000000' onChange={(e) => handlePriceChange(e.target.value)}/>
+            <label for='price' className ='font-semibold'> Price: {priceFilter ? `$${priceFilter.toLocaleString('en-US')}` : 'Any'}{ priceFilter === 2000000 ? '+' : ''}</label>
+            <input type='range' id='price' min='1000' max='2000000' defaultValue='2000000' onChange={(e) => handlePriceChange(e.target.value)} className = 'cursor-pointer ' />
             
-            <label for='bedrooms'>Bedrooms: </label>
+            <label for='bedrooms' className ='font-semibold'>Bedrooms: </label>
             <select id='bedrooms' onChange = {(e) => handleBedroomChange(e.target.value)}>
               <option id = 'anyBedroom'>Any</option>
               <option>1</option>
@@ -48,7 +49,7 @@ const Sidebar = ({priceFilter, setPriceFilter, setBedroomsFilter, cities, setCit
               <option value = '5'>5+</option>
             </select>
 
-            <label for='city'>City:</label>
+            <label for='city' className ='font-semibold'>City:</label>
             <select id='city' onChange = {(e) => handleCityChange(e.target.value)}>
             <option >Any</option>
             {Object.keys(cities).map((city) => {
@@ -58,7 +59,7 @@ const Sidebar = ({priceFilter, setPriceFilter, setBedroomsFilter, cities, setCit
             })}
             </select>
 
-            <input type='reset' value='Reset Filters' onClick={() => resetFilters()}/>
+            <input type='reset' value='Reset Filters' onClick={() => resetFilters()} className = 'bg-blue-500 font-semibold rounded-full text-sm hover:bg-blue-600 cursor-pointer'/>
           </form>
         ) : null}    
         </div>

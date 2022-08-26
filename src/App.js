@@ -3,18 +3,22 @@ import data from './homes.json'
 import ListingContainer from './components/listingContainer'
 import ListingCard from './components/listingCard'
 import Sidebar from './components/sidebar'
-
+import DetailedView from './components/detailedView'
 
 function App() {
 
   const [allListings, setAllListings] = useState([])
   const [currentListings, setCurrentListings] = useState([])
   const [listingCards, setListingCards] = useState([])
+
   const [priceFilter, setPriceFilter] = useState(null)
   const [bedroomFilter, setBedroomsFilter] = useState('Any')
   const [cityFilter, setCityFilter] = useState('Any')
+
   const [cities, setCities] = useState([])
   const [listingsByBedrooms, setBedroomListings] = useState({})
+
+  const [showDetails, setShowDetails] = useState(null)
 
   // Grab data from database and map it to components
   useEffect(() => {
@@ -32,7 +36,7 @@ function App() {
     
     const allListings = fetchedListings.map((listingData, key) => {
 
-      const component = <ListingCard data = {listingData} key = {key}/>
+      const component = <ListingCard data = {listingData} key = {key} setShowDetails = {setShowDetails}/>
 
         // create object of city : [listings]
         const listingCity = listingData.property.address.city
@@ -72,31 +76,19 @@ function App() {
 
   // update current listings when filters are applied
   useEffect(() => {
-    console.log('Filters:' , priceFilter, bedroomFilter, cityFilter)
     
     if(!listingCards.length) return
     if(!priceFilter && !bedroomFilter && !cityFilter) setCurrentListings(listingCards)
 
     let filteredListings = listingCards
 
-
     if(cityFilter !== 'Any') filteredListings = cities[cityFilter]
-  
-
     if(bedroomFilter !== 'Any') filteredListings = compare(filteredListings, listingsByBedrooms[bedroomFilter])
-    
-
     if(priceFilter !== null){
-
       if(priceFilter !== 2000000){
-
         filteredListings = filteredListings.map((listing) => {
-
         const price = listing.props.data.price
-
         if(price < priceFilter) return listing
-        
-    
         })
       }
     }
@@ -106,24 +98,15 @@ function App() {
   }, [priceFilter, bedroomFilter, cityFilter])
 
   const compare = (arr1, arr2 = null) => {
-
     if(!arr2) return []
-
     const result = [] 
 
     for(const listing of arr1){
       if(arr2.includes(listing)) result.push(listing)
     }
-
     return result
   }
-  // Filtering
-    // keep a current list as we pass it through each filter and return the las t
-    // city
-    // price
-      // ascending / descending order?
-      // slider range?
-    // number of bedrooms
+
 
   return (
     <div className="flex flex-row h-full w-full min-w-full">
@@ -134,7 +117,10 @@ function App() {
       setCityFilter = {setCityFilter}
       cities = {cities}
       />
-      <ListingContainer active = {currentListings}/>
+      {
+        showDetails  ? <DetailedView setShowDetails={setShowDetails} data = {showDetails}/> : null
+      }
+      <ListingContainer active = {currentListings} />
     </div>
   );
 }
