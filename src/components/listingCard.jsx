@@ -22,10 +22,10 @@ const listingCard = ({data, setShowDetails}) => {
     setShowDetails(data)
   }
   return (
-    <button onClick = {() => handleClick()} className = 'max-h-fit w-full min-w-fit shadow-lg rounded-md hover:shadow-2xl transition-shadow'>
+    <button onClick = {() => handleClick()} className = 'max-h-fit w-full min-w-fit shadow-lg shadow-black-500/50 rounded-md hover:shadow-2xl transition-shadow'>
       
       <div className = 'h-3/5 min-h-max'>
-        <img src={data.property.primaryImageUrl} alt = 'house image' className ='object-cover h-full w-full rounded-t-md'/>
+        <img src={data.property.primaryImageUrl} alt={'img error'}className ='object-cover h-full w-full rounded-t-md'/>
       </div>
 
       <div className = 'flex flex-col justify-between h-2/5 p-2 bg-neutral-200 text-left rounded-b-md min-w-fit truncate'>

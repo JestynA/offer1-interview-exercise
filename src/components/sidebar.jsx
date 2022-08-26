@@ -28,13 +28,13 @@ const Sidebar = ({priceFilter, setPriceFilter, setBedroomsFilter, cities, setCit
   }
 
   return (
-    <div className = 'flex flex-col justify-start items-center gap-20 left-0 w-1/6 h-screen bg-stone-300 py-10 border-solid border-zinc-300 shadow-2xl'>
+    <div className = 'z-10 flex flex-col justify-start items-center break-normal gap-20 left-0 w-1/6 h-screen bg-stone-300 py-10 border-solid border-zinc-300 shadow-[-10px_0_10px_5px] overflow-auto'>
     <AiOutlineHome size ={60}/>
     <div className = 'w-full flex-col flex items-center'>
         <button className = 'w-full h-12 border-y-2 border-stone-500 bg-stone-400 hover:bg-stone-500 font-semibold'>Listings</button>
         <button className = 'w-full h-12 border-b-2 border-stone-500 bg-stone-400 hover:bg-stone-500 font-semibold' onClick={() => setShowFilters(!showFilters)}>Filter</button>
         { showFilters ? (
-          <form className = 'w-full bg-stone-400 flex flex-col p-4 gap-2 border-b-2 border-stone-500'>
+          <form className = ' max-h-80 w-full bg-stone-400 flex flex-col p-4 gap-2 border-b-2 border-stone-500'>
 
             <label for='price' className ='font-semibold'> Price: {priceFilter ? `$${priceFilter.toLocaleString('en-US')}` : 'Any'}{ priceFilter === 2000000 ? '+' : ''}</label>
             <input type='range' id='price' min='1000' max='2000000' defaultValue='2000000' onChange={(e) => handlePriceChange(e.target.value)} className = 'cursor-pointer ' />
